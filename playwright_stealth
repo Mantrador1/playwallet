@@ -1,0 +1,13 @@
+New-Item -ItemType Directory -Path "$PSScriptRoot\playwright_stealth" -Force | Out-Null
+
+@"
+import asyncio
+
+def patch_stealth(page):
+    return asyncio.create_task(_patch(page))
+
+async def _patch(page):
+    await page.add_init_script(path="stealth.min.js")
+"@ | Set-Content -Path "$PSScriptRoot\playwright_stealth\stealth_async.py"
+
+'from .stealth_async import *' | Set-Content -Path "$PSScriptRoot\playwright_stealth\__init__.py"
